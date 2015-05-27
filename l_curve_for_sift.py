@@ -19,7 +19,7 @@ sample = np.float32(sample)
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.1)
 wss = []
 for k in range(2, 100): #this is only to determine
-	compactness, labels, centers = cv2.kmeans(sample, k, criteria, 1, cv2.KMEANS_PP_CENTERS) #maybe more attempts are required
+	compactness, labels, centers = cv2.kmeans(sample, k, criteria, 1, cv2.KMEANS_PP_CENTERS) #maybe more attempts are required, watch for memory limit
 	wss.append(compactness)
 	
 plt.plot(wss, range(1,100), '-ro')
