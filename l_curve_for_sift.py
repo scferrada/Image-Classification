@@ -5,15 +5,13 @@ import sys
 import matplotlib.pyplot as plt
 
 folder = sys.argv[1] #check if folder
-sift = cv2.SIFT()
-image_files = [f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder,f))]
-for file in image_files:
-	image = cv2.imread(file)
-	gray_img = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-	kp, desc = sift.detectAndCompute(gray_img)
-	#save to file
 
-sample = np.array()#=read descriptors from disk
+sample = []
+for dir, subdirlist, filelist in os.walk(folder):
+	for file in [f for f in filelist if not f.endswith('vindex.npy')]:
+		with VectorSerializer(os.path.join(folder,file)) as serializer:
+			for i in xrange(serializer.size()):
+				sample.append(serializer.get(i))#=read descriptors from disk
 sample = np.float32(sample)
 
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.1)
