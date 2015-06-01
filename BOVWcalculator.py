@@ -46,8 +46,8 @@ compactness, labels, centers = cv2.kmeans(descriptors, clusters, criteria, 3, cv
 # transform labels: [[x], [y], [z]] ->  [x, y, z]
 labels = [x[0] for x in labels]
 
-
-with VectorSerializer(os.path.join(folder_out, 'out.center')) as serializer:
+print "Writing cluster centers"
+with VectorSerializer(os.path.join(folder_out, 'out.center'), True) as serializer:
 	serializer.append(centers)
 
 print "Precalculating term appearances count in documents"
@@ -66,17 +66,17 @@ aux = None
 word_in_doc_count = None
 
 print "Writing cached IDF"
-with VectorSerializer(os.path.join(folder_out,'out.idf')) as serializer:
+with VectorSerializer(os.path.join(folder_out,'out.idf'), True) as serializer:
 	serializer.append(idf)
 
 print "Writing dictionary"
 #Write dictionary
-with VectorSerializer(os.path.join(folder_out,'out.dict')) as serializer:
+with VectorSerializer(os.path.join(folder_out,'out.dict'), True) as serializer:
 	serializer.append(class_dictionary)
 
 print "Writing BOVW"
 i=0
-with VectorSerializer(os.path.join(folder_out, 'out')) as serializer:
+with VectorSerializer(os.path.join(folder_out, 'out'), True) as serializer:
 	for clusternumber, amount in class_amount_list:
 		hist = [0] * clusters
 		for j in xrange(i,i+amount):

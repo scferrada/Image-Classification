@@ -2,18 +2,19 @@ import numpy as np
 import os
 
 class VectorSerializer:
-	def __init__(self, filename):
+	def __init__(self, filename, overwrite = False):
 		self.filename = filename
 		self.handle = None
 		self.vindex = None
+		self.overwrite = overwrite
 		
 	def __enter__(self):
-		if os.path.isfile(self.filename):
+		if not self.overwrite and os.path.isfile(self.filename):
 			self.handle = open(self.filename,'a+b')
 		else:
 			self.handle = open(self.filename,'w+b')
-		if os.path.isfile(self.filename + '.vindex.npy'):
-			self.vindex = np.load(self.filename + '.vindex.npy')
+		if not self.overwrite and os.path.isfile(self.filename + '.vindex.npy'):
+			self.vindex = np.load(self.filename + '.vindex.npy').tolist()
 		else:
 			self.vindex = []
 		return self
