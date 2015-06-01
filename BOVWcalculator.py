@@ -41,20 +41,30 @@ descriptors = np.array(descriptors)
 
 print "Running k-means"
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.1)
-compactness, labels, centers = cv2.kmeans(descriptors, clusters, criteria, 10, cv2.KMEANS_PP_CENTERS)
+compactness, labels, centers = cv2.kmeans(descriptors, clusters, criteria, 1, cv2.KMEANS_PP_CENTERS)
+
+# transform labels: [[x], [y], [z]] ->  [x, y, z]
+labels = [x[0] for x in labels]
+
 
 print "Precalculating term appearances count in documents"
-word_in_doc_count = [0] * len(labels)
+word_in_doc_count = [0] * clusters
 i=0
-aux = [0] * len(labels)
 # Find out number of documents that contain each word for idf term
 for clusternumber, amount in class_amount_list:
-	for j in xrange(len(aux)):
-		aux[j] = 0
+	aux = [0] * clusters
 	for word in labels[i:i+amount]:
 		aux[word] = 1
 	word_in_doc_count = map(operator.add, aux, word_in_doc_count)
 	i+=amount
+idf = [math.log(1.0*len(class_amount_list)/x) for x in word_in_doc_count]
+# Free memory
+aux = None
+word_in_doc_count = None
+
+print "Writing cached IDF"
+with VectorSerializer(os.path.join(folder_out,'out.idf')) as serializer:
+	serializer.append(idf)
 
 print "Writing dictionary"
 #Write dictionary
@@ -70,7 +80,7 @@ with VectorSerializer(os.path.join(folder_out, 'out')) as serializer:
 			hist[labels[i]]+=1
 		
 		# Normalize by tf-idf
-		hist = [1.0*x/amount * math.log(1.0*len(class_amount_list)/word_in_doc_count[idx]) for idx,x in enumerate(hist)]
+		hist = [1.0*x/amount * idf[idx] for idx,x in enumerate(hist)]
 		
 		serializer.append((hist, clusternumber))
 		i+=amount
