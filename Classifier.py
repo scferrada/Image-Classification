@@ -6,11 +6,21 @@ from sklearn import svm
 from CalcSift import calc_sift
 
 def print_usage():
-	print "Usage: python %s <kernel_args> <bovw_folder> <img_folder>" % sys.argv[0]
+	print "Usage: python %s <kernel_args> <bovw_folder> <img_folder1> <class_name1> [<img_folder2> <class_name2>...]" % sys.argv[0]
 	print "where kernel is one of these:"
 	print "\t linear"
 	print "\t rbf_gamma_c"
 	exit(1)
+	
+def closest_center(x, centers):
+	closer = 0
+	min_dist = float("inf")
+	for i in xrange(len(centers)):
+		dist = np.sum(np.abs(x - centers[i]))
+		if dist < min_dist:
+			min_dist = dist
+			closer = i
+	return closer
 
 
 if len(sys.argv < 4):
@@ -33,23 +43,35 @@ else:
 	print_usage()
 	
 bovw_folder = sys.argv[2]
-files = [f for f in os.listdir(bovw_folder) if not (f.endswith("npy") and f.endswith("dict"))]
 bovws = []
 classes = []
-for file in files:
-	with VectorSerializer(os.path.join(bovw_folder,file)) as serializer:
-		for i in xrange(serializer.size()):
-			(bovw, clazz) = serializer.get(i)
-			bovws.append(bovw)
-			classes.append(clazz)
+with VectorSerializer(os.path.join(bovw_folder,'out')) as serializer:
+	for i in xrange(serializer.size()):
+		(bovw, clazz) = serializer.get(i)
+		bovws.append(bovw)
+		classes.append(clazz)
 
 
 clf.fit(bovws, classes)
+centers = 0
+idf = 0
+with VectorSerializer(os.path.join(bovw_folder, 'out.center')) as serializer:
+	centers = serializer.get(0)
 
-img_folder = sys.argv[3]
-for dir, subdirlist, filelist in os.walk(img_folder):
-	for file in [f for f in filelist if f.endswith('jpg')]:
+with VectorSerializer(os.path.join(bovw_folder, 'out.idf')) as serializer:
+	idf = serializer.get(0)
+
+folder = 3
+for i in xrange(folder, len(sys.argv), 2):
+	img_folder = sys.argv[i]
+	img_class = sys.argv[i+1]
+	for file in [f for f in os.listdir(img_folder) if f.endswith('jpg'):
 		kp, desc = calc_sift(file)
+		bovw = [0] * len(centers)
+		for x in desc:
+			center = closest_center(x, centers)
+			bovw[center] += 1
+		bovw = [1.0*x/len(kp) *idf[idx] for idx, x in enumerate(bovw)]
 		
-
+		
 #then query, predict and measure accuracy

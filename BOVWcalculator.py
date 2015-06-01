@@ -47,7 +47,7 @@ compactness, labels, centers = cv2.kmeans(descriptors, clusters, criteria, 1, cv
 labels = [x[0] for x in labels]
 
 
-with VectorSerializer(os.path.join(folder_out, 'centers')) as serializer:
+with VectorSerializer(os.path.join(folder_out, 'out.center')) as serializer:
 	serializer.append(centers)
 
 print "Precalculating term appearances count in documents"
