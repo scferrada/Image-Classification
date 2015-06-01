@@ -3,6 +3,7 @@ import numpy as np
 from sklearn import svm
 import CalcSift as cs
 from VectorSerializer import VectorSerializer
+import math
 
 def print_usage():
 	print "Usage: python %s <kernel_args> <bovw_folder> <img_folder1> <class_name1> [<img_folder2> <class_name2>...]" % sys.argv[0]
@@ -15,7 +16,7 @@ def closest_center(x, centers):
 	closer = 0
 	min_dist = float("inf")
 	for i in xrange(len(centers)):
-		dist = np.sum(np.abs(x - centers[i]))
+		dist = math.sqrt(np.sum(np.absolute(x*x - centers[i]*centers[i])))
 		if dist < min_dist:
 			min_dist = dist
 			closer = i
