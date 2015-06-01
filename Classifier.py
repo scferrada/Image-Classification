@@ -66,7 +66,7 @@ with VectorSerializer(os.path.join(bovw_folder, 'out.idf')) as serializer:
 
 with VectorSerializer(os.path.join(bovw_folder, 'out.dict')) as serializer:
 	class_dict = serializer.get(0)
-print class_dict
+print type(class_dict)
 print "Calculating sift and predicting"
 folder = 3
 results = []
@@ -74,7 +74,7 @@ sift = cv2.SIFT()
 for i in xrange(folder, len(sys.argv), 2):
 	img_folder = sys.argv[i]
 	img_class = sys.argv[i+1]
-	print img_folder
+	print "%s, %s" % (img_folder, img_class)
 	for file in [f for f in os.listdir(img_folder) if f.endswith('jpg')]:
 		kp, desc = cs.calc_sift(sift, os.path.join(img_folder,file))
 		bovw = [0] * len(centers)
