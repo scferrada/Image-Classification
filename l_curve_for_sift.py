@@ -13,16 +13,16 @@ for dir, subdirlist, filelist in os.walk(folder):
 		with VectorSerializer(os.path.join(dir,file)) as serializer:
 			for i in xrange(serializer.size()):
 				sample.extend(serializer.get(i))#=read descriptors from disk
-#sample = np.float32(sample)
-print len(sample)
 sample = np.array(sample)
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.1)
 wss = []
-for k in xrange(10, 200, 5): #this is only to determine
+for k in xrange(10, 200, 20): #this is only to determine
 	compactness, labels, centers = cv2.kmeans(sample, k, criteria, 1, cv2.KMEANS_PP_CENTERS) #maybe more attempts are required, watch for memory limit
 	wss.append(compactness)
+	# print labels
+	# exit()
 	if k%10 == 0:
 		print k
 	
-plt.plot(range(10,200,5), wss, '-ro')
+plt.plot(range(10,200,20), wss, '-ro')
 plt.show()
