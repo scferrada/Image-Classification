@@ -66,7 +66,7 @@ with VectorSerializer(os.path.join(bovw_folder, 'out.idf')) as serializer:
 
 with VectorSerializer(os.path.join(bovw_folder, 'out.dict')) as serializer:
 	class_dict = serializer.get(0)
-print type(class_dict)
+#print type(class_dict)
 print "Calculating sift and predicting"
 folder = 3
 results = []
