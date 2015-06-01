@@ -77,8 +77,7 @@ with VectorSerializer(os.path.join(folder_out, 'out')) as serializer:
 	for clusternumber, amount in class_amount_list:
 		hist = [0] * clusters
 		for j in xrange(i,i+amount):
-			hist[labels[i]]+=1
-		
+			hist[labels[j]]+=1
 		# Normalize by tf-idf
 		hist = [1.0*x/amount * idf[idx] for idx,x in enumerate(hist)]
 		
