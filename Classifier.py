@@ -89,3 +89,7 @@ for i in xrange(folder, len(sys.argv), 2):
 
 with VectorSerializer(os.path.join('.', 'results'), overwrite = True) as serializer:
 	serializer.append(results)
+
+# Compute precision
+matches = reduce(lambda x,y: x + (1 if (y[0] == y[1]) else 0), results, 0)
+print "Precision:",(1.0*matches/len(results))
