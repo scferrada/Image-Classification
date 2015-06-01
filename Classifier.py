@@ -1,7 +1,5 @@
-import cv2
+import cv2, os, sys
 import numpy as np
-import os
-import sys
 from sklearn import svm
 from CalcSift import calc_sift
 
@@ -55,23 +53,30 @@ with VectorSerializer(os.path.join(bovw_folder,'out')) as serializer:
 clf.fit(bovws, classes)
 centers = 0
 idf = 0
+class_name1 = 0
 with VectorSerializer(os.path.join(bovw_folder, 'out.center')) as serializer:
 	centers = serializer.get(0)
 
 with VectorSerializer(os.path.join(bovw_folder, 'out.idf')) as serializer:
 	idf = serializer.get(0)
 
+with VectorSerializer(os.path.join(bovw_folder, 'out.dict')) as serializer:
+	class_dict = serializer.get(0)
+
 folder = 3
+results = []
 for i in xrange(folder, len(sys.argv), 2):
 	img_folder = sys.argv[i]
 	img_class = sys.argv[i+1]
-	for file in [f for f in os.listdir(img_folder) if f.endswith('jpg'):
+	for file in [f for f in os.listdir(img_folder) if f.endswith('jpg')]:
 		kp, desc = calc_sift(file)
 		bovw = [0] * len(centers)
 		for x in desc:
 			center = closest_center(x, centers)
 			bovw[center] += 1
 		bovw = [1.0*x/len(kp) *idf[idx] for idx, x in enumerate(bovw)]
-		
-		
-#then query, predict and measure accuracy
+		predicted_class = clf.predict(bovw)
+		results.append((class_dict.index(img_class), predicted_class))
+
+with VectorSerializer(os.path.join('.', 'results')) as serializer:
+	serializer.append(results)
