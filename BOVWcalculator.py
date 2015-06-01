@@ -16,8 +16,9 @@ class_dictionary = {}
 for i in xrange(folders_start,len(sys.argv),2):
 	folder = sys.argv[i]
 	clustername = sys.argv[i+1]
-	class_dictionary[clustername] = (i-folders_start)/2
-	folder_cluster[folder] = i-folders_start
+	clusternumber = (i-folders_start)/2
+	class_dictionary[clustername] = clusternumber
+	folder_cluster[folder] = clusternumber
 
 # With class_amount_list array keep track of the amount of descriptors found
 # per image so we can match descriptors with single images later on.
