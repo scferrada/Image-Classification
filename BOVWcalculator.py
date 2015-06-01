@@ -43,6 +43,9 @@ print "Running k-means"
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.1)
 compactness, labels, centers = cv2.kmeans(descriptors, clusters, criteria, 10, cv2.KMEANS_PP_CENTERS)
 
+with VectorSerializer(os.path.join(folder_out, 'centers')) as serializer:
+	serializer.append(centers)
+
 print "Precalculating term appearances count in documents"
 word_in_doc_count = [0] * len(labels)
 i=0

@@ -3,34 +3,53 @@ import numpy as np
 import os
 import sys
 from sklearn import svm
+from CalcSift import calc_sift
 
-def serialize(x):
-	pass
+def print_usage():
+	print "Usage: python %s <kernel_args> <bovw_folder> <img_folder>" % sys.argv[0]
+	print "where kernel is one of these:"
+	print "\t linear"
+	print "\t rbf_gamma_c"
+	exit(1)
+
+
+if len(sys.argv < 4):
+	print_usage()
+
+
+if sys.argv[1].startswith("linear"):
+	clf = svm.SVC(kernel="linear")
+elif sys.argv[1].startswith("rbf"):
+	try:
+		kernel = "rbf"
+		args = sys.argv[1].split("_")
+		gamma = float(args[1])
+		C = float(args[2])
+		clf = svm.SVC(gamma=gamma, C=C)
+	except ValueError:
+		print "gamma and c parameters must be float numbers"
+		exit(1)
+else:
+	print_usage()
 	
-def deserialize(x):
-	pass
+bovw_folder = sys.argv[2]
+files = [f for f in os.listdir(bovw_folder) if not (f.endswith("npy") and f.endswith("dict"))]
+bovws = []
+classes = []
+for file in files:
+	with VectorSerializer(os.path.join(bovw_folder,file)) as serializer:
+		for i in xrange(serializer.size()):
+			(bovw, clazz) = serializer.get(i)
+			bovws.append(bovw)
+			classes.append(clazz)
 
-clusters = int(sys.argv[1])
-descriptors_folder = sys.argv[2]
-descriptors = np.array() #should load descriptors from folder
-descriptors = np.float32(descriptors)
 
-criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.1)
-compactness, labels, centers = cv2.kmeans(descriptors, clusters, criteria, 10, cv2.KMEANS_PP_CENTERS)
+clf.fit(bovws, classes)
 
-#calculation of BOVW
-index = 0
-for descriptor in [f for f in os.listdir(descriptors_folder) if os.path.isfile(os.path.join(descriptors_folder,f))]:
-	keypoints = deserialize(descriptor)#.getNbofKeypoints() #something like it
-	bovw = [0 for x in range(clusters)]
-	for point in range(keypoints):
-		bovw[labels[i+point]] += 1
-	serialize(normalize(bovw))
-	i += keypoints
-
-bovws = [] #should read them from disk
-classes = [] #vector with the class of each photo, should be read from disk
-clf = svm.SVC()
-print clf.fit(bovws, classes)
+img_folder = sys.argv[3]
+for dir, subdirlist, filelist in os.walk(img_folder):
+	for file in [f for f in filelist if f.endswith('jpg')]:
+		kp, desc = calc_sift(file)
+		
 
 #then query, predict and measure accuracy
