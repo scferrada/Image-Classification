@@ -87,5 +87,5 @@ for i in xrange(folder, len(sys.argv), 2):
 		print predicted_class
 		results.append((class_dict[img_class], predicted_class))
 
-with VectorSerializer(os.path.join('.', 'results')) as serializer:
+with VectorSerializer(os.path.join('.', 'results'), overwrite = True) as serializer:
 	serializer.append(results)
