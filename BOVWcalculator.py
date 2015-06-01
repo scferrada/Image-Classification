@@ -16,7 +16,7 @@ class_dictionary = {}
 for i in xrange(folders_start,len(sys.argv),2):
 	folder = sys.argv[i]
 	clustername = sys.argv[i+1]
-	class_dictionary[clustername] = i-folders_start
+	class_dictionary[clustername] = (i-folders_start)/2
 	folder_cluster[folder] = i-folders_start
 
 # With class_amount_list array keep track of the amount of descriptors found
