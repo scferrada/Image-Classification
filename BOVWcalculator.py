@@ -3,7 +3,6 @@ from VectorSerializer import VectorSerializer
 import operator
 import math
 import numpy as np
-import operator
 
 if len(sys.argv) < 5:
 	print "Usage: python %s <number_of_clusters> <out_folder> <descriptors_folder_1> <class_name1> [<descriptors_folder_2> <class_name_2> ...]" %(sys.argv[0])
@@ -43,9 +42,6 @@ descriptors = np.array(descriptors)
 print "Running k-means"
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.1)
 compactness, labels, centers = cv2.kmeans(descriptors, clusters, criteria, 10, cv2.KMEANS_PP_CENTERS)
-# print len(labels)
-# print sum(map(operator.itemgetter(1),class_amount_list))
-# exit()
 
 print "Precalculating term appearances count in documents"
 word_in_doc_count = [0] * len(labels)
