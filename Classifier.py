@@ -85,7 +85,6 @@ for i in xrange(folder, len(sys.argv), 2):
 			bovw[center] += 1
 		bovw = [1.0*x/len(kp) *idf[idx] for idx, x in enumerate(bovw)]
 		predicted_class = clf.predict(bovw)
-		print predicted_class
 		results.append((class_dict[img_class], predicted_class))
 
 with VectorSerializer(os.path.join('.', 'results'), overwrite = True) as serializer:
