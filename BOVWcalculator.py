@@ -42,7 +42,7 @@ descriptors = np.array(descriptors)
 
 print "Running k-means"
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 0.1)
-compactness, labels, centers = cv2.kmeans(descriptors, clusters, criteria, 1, cv2.KMEANS_PP_CENTERS)
+compactness, labels, centers = cv2.kmeans(descriptors, clusters, criteria, 10, cv2.KMEANS_PP_CENTERS)
 # print len(labels)
 # print sum(map(operator.itemgetter(1),class_amount_list))
 # exit()
