@@ -53,7 +53,7 @@ with VectorSerializer(os.path.join(bovw_folder,'out')) as serializer:
 		classes.append(clazz)
 
 print "training..."
-print classes
+#print classes
 clf.fit(bovws, classes)
 centers = 0
 idf = 0
