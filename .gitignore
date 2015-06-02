@@ -60,3 +60,5 @@ target/
 img_in/
 desc/
 bovw/
+results
+results.vindex.npy

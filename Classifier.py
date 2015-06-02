@@ -5,7 +5,7 @@ import CalcSift as cs
 from VectorSerializer import VectorSerializer
 
 def print_usage():
-	print "Usage: python %s <kernel_args> <bovw_folder> <img_folder1> <class_name1> [<img_folder2> <class_name2>...]" % sys.argv[0]
+	print "Usage: python %s <kernel_args> <bovw_folder> [-color] <img_folder1> <class_name1> [<img_folder2> <class_name2>...]" % sys.argv[0]
 	print "where kernel is one of these:"
 	print "\t linear"
 	print "\t rbf_gamma_c"
@@ -69,6 +69,10 @@ with VectorSerializer(os.path.join(bovw_folder, 'out.dict')) as serializer:
 #print type(class_dict)
 print "Calculating sift and predicting"
 folder = 3
+gray = True
+if sys.argv[3] == '-color':
+	folder = 4
+	gray = False
 results = []
 sift = cv2.SIFT()
 for i in xrange(folder, len(sys.argv), 2):
@@ -76,7 +80,7 @@ for i in xrange(folder, len(sys.argv), 2):
 	img_class = sys.argv[i+1]
 	print "%s, %s" % (img_folder, img_class)
 	for file in [f for f in os.listdir(img_folder) if f.endswith('jpg')]:
-		kp, desc = cs.calc_sift(sift, os.path.join(img_folder,file))
+		kp, desc = cs.calc_sift(sift, os.path.join(img_folder,file), gray)
 		bovw = [0] * len(centers)
 		for x in desc:
 			center = closest_center(x, centers)
